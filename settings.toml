@@ -1,0 +1,119 @@
+[default]
+# Required config to connect to the MongoDB Database
+username = ""
+password = ""
+port = 27017
+host = "localhost"
+master_database = "master"
+database = "db"
+query_database = "query_db"
+# Path to the dataset
+data_path = "../Data/phase3_sample_data/Labelled/Set2"
+# Path to unlabled dataset
+unlabeled_data_path = "../Data/phase3_sample_data/Unlabelled/Set 2"
+# Path to all 11k hands (Task 5 and 6)
+master_data_path = "../Data/Hands/"
+# Path to the output
+output_path = "../Outputs/"
+# Path to templates
+template_path = "templates"
+# Path to metadata
+metadata_csv = "../Data/phase3_sample_data/labelled_set2.csv"
+# metadata_csv = "../Data/HandInfo.csv"
+# Path to unlabeled metadata
+unlabeled_metadata_csv = "../Data/phase3_sample_data/unlabelled_set2.csv"
+# Path to 11k metadata csv
+master_metadata_csv = "../Data/HandInfo.csv"
+task_five_output = "task_five_output"
+
+  [default.ppr]
+    [default.ppr.task_3]
+      cache_dir = '../Cache/PPR/Task3'
+    [default.ppr.feedback]
+      cache_dir = "../Cache/PPR/Feedback"
+    [default.ppr.classifier]
+      frt = 'nmf'
+# k=58 works great for math_method
+      k = 25
+      feature = 'moment_inv'
+      edges = 90
+      alpha = 0.15
+      convergence_method = 'power_iteration'
+# ignoring metadata gives good results for set2 data and power iteration
+      ignore_metadata = false
+
+  [default.decision.classifier]
+    model = 'moment_inv'
+    max_depth = 15
+    min_size = 30
+
+  [default.svm.classifier]
+    k = 10
+    frt = 'nmf'
+    model = 'moment'
+
+# The feature models
+  [default.sift]
+  # The colletion to store sift data
+    collection = "img_sift"
+  # Use opencvs implementation of SIFT algorithm or use the binary provided by
+  # David Lowe
+    use_opencv = 1
+    bin_path = "./bin/sift"
+    kmeans_verbosity = 0
+
+  # [default.moment]
+  # # The colletion to store moments data
+  #   collection = "img_moment"
+  #   collection_inv = "img_moment_inv"
+  # # Weights used for the calculation of Moment
+  # # Format is - W_Y_1, W_Y_2, W_Y_3, W_U_1, W_U_2, W_U_3, W_V_1, W_V_2, W_V_3
+  # # Must be in double format.
+  #   weights = [3.0, 3.0, 3.0, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
+
+# Application configuration
+  [default.loader]
+  # Batch to operate on
+    batch_size = 1000
+
+  [default.window]
+  # Images are split into windows when calculating Image Moments. The two
+  # configuration specifies the dimensions of the window.
+    win_height = 100
+    win_width = 100
+
+  [default.moment]
+  # The colletion to store moments data
+    collection = "img_moment"
+    collection_inv = "img_moment_inv"
+  # Weights used for the calculation of Moment
+  # Format is - W_Y_1, W_Y_2, W_Y_3, W_U_1, W_U_2, W_U_3, W_V_1, W_V_2, W_V_3
+  # Must be in double format.
+    weights = [3.0, 3.0, 3.0, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
+
+  [default.hog]
+    collection = "img_hog"
+    scale_factor = 10
+
+  [default.images]
+    metadata_collection = 'metadata'
+
+  [default.lbp]
+    collection = 'lbp'
+
+  [default.task1_config]
+    model = 'sift'
+    frt = 'pca'
+
+  [default.task2_config]
+    model = 'moment'
+    max_iter = 500
+
+  [default.task5_config]
+    max_evals = 1000
+    gamma_max = 0
+    lda_max_evals = 5
+    lda_gamma_max = 0
+    nmf_gamma_max = 2000
+    nmf_max_evals = 500
+    clfs_directory = '../Outputs/clfs/'
